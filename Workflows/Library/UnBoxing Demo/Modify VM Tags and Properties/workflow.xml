@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="27b50ee0-9b59-4ff6-932a-9f6b1e7b9153" editor-version="2.0" version="0.0.0" api-version="6.0.0" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Modify VM Tags and Properties</display-name>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="inputProperties" type="Properties"/>
+    </input>
+    <output>
+        <param name="customProperties" type="Properties"/>
+        <param name="tags" type="Properties"/>
+    </output>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <in-binding/>
+        <out-binding/>
+        <position y="50.0" x="380.0"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item0" type="task" comparator="0">
+        <display-name>Tags and Props</display-name>
+        <script encoded="false">var tags = inputProperties.tags || new Properties();&#13;
+var customProperties = inputProperties.customProperties || new Properties();&#13;
+  &#13;
+//Use workflow metadata to set tags and properties&#13;
+var userName = System.getContext().getParameter("__metadata_userName");&#13;
+var eventTopicId = System.getContext().getParameter("__metadata_eventTopicId");&#13;
+  &#13;
+tags.put("UserName",userName);&#13;
+tags.put("EventTopic",eventTopicId);&#13;
+customProperties.put("UserName",userName);&#13;
+customProperties.put("EventTopic",eventTopicId);&#13;
+&#13;
+System.log(customProperties)</script>
+        <in-binding>
+            <bind name="inputProperties" type="Properties" export-name="inputProperties"/>
+        </in-binding>
+        <out-binding>
+            <bind name="customProperties" type="Properties" export-name="customProperties"/>
+            <bind name="tags" type="Properties" export-name="tags"/>
+        </out-binding>
+        <description>Simple task with custom script capability.</description>
+        <position y="60.0" x="200.0"/>
+    </workflow-item>
+</ns2:workflow>

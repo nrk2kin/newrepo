@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getVmName" result-type="string" api-version="6.0.0" id="af4bba19-1372-40ae-9b3a-559746fcb7e0" version="0.0.0" allowed-operations="vfe" category-name="com.vmware.unboxing">
+  <description><![CDATA[Returns Virtual machinen anem]]></description>
+  <param n="VM" t="VC:VirtualMachine"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[var vmName = VM.name
+return vmName]]></script>
+</dunes-script-module>

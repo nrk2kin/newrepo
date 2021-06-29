@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="d7d9118c-3913-4b14-a511-1b6a7428d97b" editor-version="2.0" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Vm Deployment Notification</display-name>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="VM" type="VC:VirtualMachine"/>
+    </input>
+    <output>
+        <param name="actionResult" type="string"/>
+    </output>
+    <attrib name="smtpHost" type="string">
+        <value encoded="n">10.109.44.26</value>
+        <description>SMTP host</description>
+    </attrib>
+    <attrib name="username" type="string">
+        <value encoded="n">administrator@avengers.com</value>
+        <description>Username for authentication</description>
+    </attrib>
+    <attrib name="password" type="SecureString">
+        <value encoded="n">10BG56Q4DH77N61K72K65H40T31Q32V33WE65717NBB90D3DN353441R1E5C4DEK22782A7MDAEF0BZ850D49FX5E808F6N9223A9EKD1BF3ABPEC8E0CEI2D38A08YC5D05EAT9397B8FH3371BA3RC8C5663S2E5A4BDG43C0EA6XDEB693DPF0EF579LC66DCD4V962F5E7Q</value>
+        <description>Password for authentication</description>
+    </attrib>
+    <attrib name="fromName" type="string">
+        <value encoded="n">automationteam@avengers.com</value>
+        <description>Sender's name</description>
+    </attrib>
+    <attrib name="fromAddress" type="string">
+        <value encoded="n">automation@avengers.com</value>
+        <description>Sender's address</description>
+    </attrib>
+    <attrib name="useStartTls" type="boolean">
+        <value encoded="n">true</value>
+        <description>If true, enables the use of the STARTTLS command (if supported by the server) to switch the connection to a TLS-protected connection before issuing any login commands.</description>
+    </attrib>
+    <attrib name="smtpPort" type="number">
+        <value encoded="n">587.0</value>
+    </attrib>
+    <attrib name="subject" type="string">
+        <value encoded="n">VM Deployment Notification</value>
+    </attrib>
+    <attrib name="content" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="toAddress" type="string">
+        <value encoded="n">user1@avengers.com</value>
+        <description>Destination address</description>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <in-binding/>
+        <out-binding/>
+        <position y="50.0" x="460.0"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item2" type="task" comparator="0">
+        <display-name>Scriptable task</display-name>
+        <script encoded="false">//Template variables
+var templateFile = "index.html";
+var folder = "Email Template";
+
+var resource = null; //Template
+
+//Get all resources from resources folder
+var resElems = Server.getResourceElementCategoryWithPath(folder);
+resElems.resourceElements.forEach(function(resElem){
+	if(resElem.name ==templateFile){
+		resource = resElem;
+	}
+});
+
+//Get DateTime
+var today = new Date();
+
+//Resource to MimeAttachment
+var mimeResource = resource.getContentAsMimeAttachment();
+content = mimeResource.content;
+content = content.replace("{{date}}", today.toLocaleDateString() + " - " + 
+                                      today.toLocaleTimeString());
+content = content.replace("{{name}}", VM.name);
+content = content.replace("{{Os}}", VM.guestOS);
+content = content.replace("{{ipAddress}}", VM.ipAddress);
+content = content.replace("{{cpu}}", VM.cpu);
+content = content.replace("{{memory}}", VM.memory);
+content = content.replace("{{vmTools}}", VM.vmToolsVersionStatus);
+
+</script>
+        <in-binding>
+            <bind name="VM" type="VC:VirtualMachine" export-name="VM"/>
+            <bind name="content" type="string" export-name="content"/>
+        </in-binding>
+        <out-binding>
+            <bind name="actionResult" type="string" export-name="actionResult"/>
+            <bind name="content" type="string" export-name="content"/>
+        </out-binding>
+        <description>Simple task with custom script capability.</description>
+        <position y="60.0" x="180.0"/>
+    </workflow-item>
+    <workflow-item name="item2" out-name="item0" type="link" linked-workflow-id="1295828b-7597-49ec-a117-5a7731a670f7" comparator="0">
+        <display-name>Send notification (TLSv1.2)</display-name>
+        <in-binding>
+            <bind name="smtpHost" type="string" export-name="smtpHost">
+                <description>SMTP host</description>
+            </bind>
+            <bind name="smtpPort" type="number" export-name="smtpPort">
+                <description>SMTP port</description>
+            </bind>
+            <bind name="username" type="string" export-name="username">
+                <description>Username for authentication</description>
+            </bind>
+            <bind name="password" type="SecureString" export-name="password">
+                <description>Password for authentication</description>
+            </bind>
+            <bind name="fromName" type="string" export-name="fromName">
+                <description>Sender's name</description>
+            </bind>
+            <bind name="fromAddress" type="string" export-name="fromAddress">
+                <description>Sender's address</description>
+            </bind>
+            <bind name="toAddress" type="string" export-name="toAddress">
+                <description>Destination address</description>
+            </bind>
+            <bind name="subject" type="string" export-name="subject">
+                <description>Email subject</description>
+            </bind>
+            <bind name="content" type="string" export-name="content">
+                <description>Email content (text or HTML)</description>
+            </bind>
+            <bind name="useStartTls" type="boolean" export-name="useStartTls">
+                <description>If true, enables the use of the STARTTLS command (if supported by the server) to switch the connection to a TLS-protected connection before issuing any login commands.</description>
+            </bind>
+        </in-binding>
+        <out-binding/>
+        <description> </description>
+        <position y="60.0" x="315.0"/>
+    </workflow-item>
+</ns2:workflow>

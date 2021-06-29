@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="945a36bf-604c-4559-9248-e16c0dc6a3d1" editor-version="2.0" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Update CMDB- Deleted VMs</display-name>
+    <description>Updates the datedeleted record of the CMDB virtualmachine table.</description>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="vm" type="string"/>
+    </input>
+    <output/>
+    <attrib name="sqldb" type="SQL:Database">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='811e7289-6451-4835-a464-55c865267da2'&amp;dunesName='SQL:Database'</value>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <in-binding/>
+        <out-binding/>
+        <position y="50.0" x="380.0"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item0" type="task" comparator="0">
+        <display-name>Scriptable task</display-name>
+        <script encoded="false">//Get dateS
+
+System.log("VM Name: "+ vm)
+var date= new Date()
+ var year= date.getFullYear()
+ var month=date.getMonth() +1
+ var day=date.getDate()
+var hour=date.getHours()
+var mins=date.getMinutes()
+var sec=date.getSeconds()
+var mil=date.getMilliseconds()
+var d = year +'-'+month +'-'+day+' '+hour+':'+mins+':'+sec+':'+mil
+System.log(d)
+
+var sqlquery= 'update virtualmachine set datedeleted =' + '\''+ d + '\'' + " "+ 'where vmname = ' + '\'' + vm +'\''
+System.log(sqlquery)
+sqldb.executeCustomQuery(sqlquery)</script>
+        <in-binding>
+            <bind name="sqldb" type="SQL:Database" export-name="sqldb"/>
+            <bind name="vm" type="string" export-name="vm"/>
+        </in-binding>
+        <out-binding/>
+        <description>Simple task with custom script capability.</description>
+        <position y="60.0" x="180.0"/>
+    </workflow-item>
+</ns2:workflow>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="58bd5185-f4c6-4d27-85bf-7f67c536c99f" editor-version="2.0" version="0.0.0" api-version="6.0.0" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Create ResourceEleme</display-name>
+    <position y="50.0" x="100.0"/>
+    <input/>
+    <output/>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <in-binding/>
+        <out-binding/>
+        <position y="50.0" x="300.0"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item0" type="task" comparator="0">
+        <display-name>Scriptable task</display-name>
+        <script encoded="false">var today = new Date();&#13;
+var day = String(today.getDate());&#13;
+var month = String(today.getMonth() + 1);&#13;
+//Because January is 0 :)&#13;
+var year = String(today.getFullYear());&#13;
+&#13;
+var strToday = month + '/' + day + '/' + year;&#13;
+// If you want, you can use the toLocaleDateString function for the date.&#13;
+//Ex: var strToday = today.toLocaleDateString();&#13;
+&#13;
+var strTime = today.toLocaleTimeString();&#13;
+&#13;
+var resElem = new MimeAttachment();&#13;
+resElem.mimeType = "text/plain";&#13;
+resElem.content = "Date : " + strToday + "\nTime : " + strTime;&#13;
+//Template of resource element created.&#13;
+&#13;
+var fileName = "today.txt";&#13;
+var folder = "Resource Element";&#13;
+&#13;
+var resElems = Server.getResourceElementCategoryWithPath(folder );&#13;
+//Get all resource elements in "Resource Element" folder.&#13;
+&#13;
+var control = true;&#13;
+if (resElems.allResourceElements.length &gt; 0){&#13;
+	resElems.resourceElements.forEach(function(entry) { //loop  &#13;
+		if(entry.name == fileName){ //get resource element by the name&#13;
+			entry.setContentFromMimeAttachment(resElem); &#13;
+			//if file is found, update it.&#13;
+			control = false;&#13;
+		}&#13;
+	});&#13;
+}&#13;
+&#13;
+if(control){ //if the file is not found, create it.&#13;
+	Server.createResourceElement(folder, fileName, resElem);&#13;
+}&#13;
+//Resource element saved.</script>
+        <in-binding/>
+        <out-binding/>
+        <description>Simple task with custom script capability.</description>
+        <position y="60.0" x="150.0"/>
+    </workflow-item>
+</ns2:workflow>

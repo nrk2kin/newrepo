@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item3" object-name="workflow:name=generic" id="d04d96ea-0cec-4a5c-b891-4a2ca3e5b3a2" editor-version="2.0" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Deploy VM and add to AD Group.</display-name>
+    <description>Deploys a virtual machine from template and adds the computer to AD computer group.</description>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="NewVmName" type="string"/>
+    </input>
+    <output/>
+    <attrib name="Template" type="VC:VirtualMachine">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='10.109.44.27%2Cid:vm-113'&amp;dunesName='VC:VirtualMachine'</value>
+    </attrib>
+    <attrib name="vmFolder" type="VC:VmFolder">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='10.109.44.27%2Cid:group-v109'&amp;dunesName='VC:VmFolder'</value>
+    </attrib>
+    <attrib name="powerOn" type="boolean">
+        <value encoded="n">true</value>
+    </attrib>
+    <attrib name="template" type="boolean">
+        <value encoded="n">false</value>
+    </attrib>
+    <attrib name="datastore" type="VC:Datastore">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='10.109.44.27%2Cid:datastore-12'&amp;dunesName='VC:Datastore'</value>
+    </attrib>
+    <attrib name="host" type="VC:HostSystem">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='10.109.44.27%2Cid:host-20'&amp;dunesName='VC:HostSystem'</value>
+    </attrib>
+    <attrib name="pool" type="VC:ResourcePool">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='10.109.44.27%2Cid:resgroup-665'&amp;dunesName='VC:ResourcePool'</value>
+    </attrib>
+    <attrib name="thinProvision" type="boolean">
+        <value encoded="n">true</value>
+    </attrib>
+    <attrib name="newVM_1" type="VC:VirtualMachine">
+        <value encoded="n"/>
+    </attrib>
+    <attrib name="group" type="AD:Group">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='%23_v2_%23%2C%23Group%23%2C%23c01381f6-015f-47b2-8b75-c69402473efa%23%2C%23CN%3DComputers%2CDC%3Davengers%2CDC%3Dcom%23'&amp;dunesName='AD:Group'</value>
+    </attrib>
+    <attrib name="domainName" type="string">
+        <value encoded="n">avengers.com</value>
+    </attrib>
+    <attrib name="newADComputer" type="AD:ComputerAD">
+        <value encoded="n"/>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <in-binding/>
+        <out-binding/>
+        <position y="50.0" x="680.0"/>
+    </workflow-item>
+    <workflow-item name="item2" out-name="item0" type="task" comparator="0">
+        <display-name>Log VM configuration</display-name>
+        <script encoded="false">var virtualMachine = newVM_1;
+
+var adComputer = newADComputer;
+System.log("Virtual Machine with the following Configuration is created: " + "\n" + "Name: " + virtualMachine.name + "\n" )
+System.log("VM Tools: " + virtualMachine.vmToolsVersionStatus + "\n");
+System.log("CPU: " + virtualMachine.cpu + "\n")
+System.log("Memory: " + virtualMachine.memory)
+System.log("Operating System: " + virtualMachine.guestOS + "\n")
+
+System.log ("Computer Added to AD group: " + adComputer.name)</script>
+        <in-binding>
+            <bind name="newVM_1" type="VC:VirtualMachine" export-name="newVM_1"/>
+            <bind name="newADComputer" type="AD:ComputerAD" export-name="newADComputer"/>
+        </in-binding>
+        <out-binding/>
+        <description>Simple task with custom script capability.</description>
+        <position y="60.0" x="480.0"/>
+    </workflow-item>
+    <workflow-item name="item3" out-name="item4" type="link" business-status="clone " linked-workflow-id="BD808080808080808080808080808080FBC280800122528313869552e41805bb1" comparator="0">
+        <display-name>Clone virtual machine, no customization</display-name>
+        <in-binding>
+            <bind name="vm" type="VC:VirtualMachine" export-name="Template">
+                <description>Virtual machine or template to clone</description>
+            </bind>
+            <bind name="vmFolder" type="VC:VmFolder" export-name="vmFolder">
+                <description>Virtual machine folder</description>
+            </bind>
+            <bind name="name" type="string" export-name="NewVmName">
+                <description>Name of the new virtual machine</description>
+            </bind>
+            <bind name="powerOn" type="boolean" export-name="powerOn">
+                <description>Specifies whether or not to power on the new virtual machine</description>
+            </bind>
+            <bind name="template" type="boolean" export-name="template">
+                <description>Specifies whether or not to mark the new virtual machine as a template</description>
+            </bind>
+            <bind name="datastore" type="VC:Datastore" export-name="datastore">
+                <description>Datastore in which to put the virtual machine. If not specified, the current datastore is used</description>
+            </bind>
+            <bind name="host" type="VC:HostSystem" export-name="host">
+                <description>Destination host for the virtual machine. If not specified, the current host is used</description>
+            </bind>
+            <bind name="pool" type="VC:ResourcePool" export-name="pool">
+                <description>Resource pool to which to attach this virtual machine</description>
+            </bind>
+            <bind name="thinProvision" type="boolean" export-name="thinProvision">
+                <description>If TRUE, empty virtual disk space is not reserved</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="newVM" type="VC:VirtualMachine" export-name="newVM_1">
+                <description>Newly created virtual machine</description>
+            </bind>
+        </out-binding>
+        <description> </description>
+        <position y="60.0" x="200.0"/>
+    </workflow-item>
+    <workflow-item name="item4" out-name="item2" type="link" linked-workflow-id="958080808080808080808080808080804781808001175609873343b6bbd2e3eea" comparator="0">
+        <display-name>Create a computer in a group</display-name>
+        <in-binding>
+            <bind name="group" type="AD:Group" export-name="group">
+                <description>Parent group for the new computer</description>
+            </bind>
+            <bind name="computerName" type="string" export-name="NewVmName">
+                <description>Name for the new computer</description>
+            </bind>
+            <bind name="domainName" type="string" export-name="domainName">
+                <description>Domain name for the new computer</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="newComputer" type="AD:ComputerAD" export-name="newADComputer"/>
+        </out-binding>
+        <description> </description>
+        <position y="60.0" x="340.0"/>
+    </workflow-item>
+</ns2:workflow>

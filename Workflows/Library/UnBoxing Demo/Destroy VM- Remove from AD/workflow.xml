@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item8" object-name="workflow:name=generic" id="c6b19b70-e457-4f10-a657-821a826a686c" editor-version="2.0" version="0.2.0" api-version="6.0.0" allowed-operations="vfe" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Destroy VM- Remove from AD</display-name>
+    <description>Workflow removes the computer Object from AD and destroys VM in vCenter.</description>
+    <position y="50.0" x="60.0"/>
+    <input>
+        <param name="vm" type="VC:VirtualMachine"/>
+    </input>
+    <output/>
+    <attrib name="vmName" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="ad_host" type="AD:AdHost">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='%23_v2_%23%2C%23RootItem%23%2C%23c01381f6-015f-47b2-8b75-c69402473efa%23'&amp;dunesName='AD:AdHost'</value>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <in-binding/>
+        <out-binding/>
+        <position y="50.0" x="660.0"/>
+    </workflow-item>
+    <workflow-item name="item3" out-name="item4" type="link" linked-workflow-id="BD80808080808080808080808080808058C180800122528313869552e41805bb1" comparator="0">
+        <display-name>Power off virtual machine and wait</display-name>
+        <in-binding>
+            <bind name="vm" type="VC:VirtualMachine" export-name="vm">
+                <description>Virtual machine to power off</description>
+            </bind>
+        </in-binding>
+        <out-binding/>
+        <description> </description>
+        <position y="60.0" x="280.0"/>
+    </workflow-item>
+    <workflow-item name="item4" out-name="item0" type="link" linked-workflow-id="BD80808080808080808080808080808003C180800122528313869552e41805bb1" comparator="0">
+        <display-name>Delete virtual machine</display-name>
+        <in-binding>
+            <bind name="vm" type="VC:VirtualMachine" export-name="vm">
+                <description>Virtual machine to delete</description>
+            </bind>
+        </in-binding>
+        <out-binding/>
+        <description> </description>
+        <position y="60.0" x="420.0"/>
+    </workflow-item>
+    <workflow-item name="item8" out-name="item3" type="task" comparator="0">
+        <display-name>Remove VM from AD</display-name>
+        <script encoded="false">ActiveDirectory.getComputerAD(vm.name, ad_host).destroy()</script>
+        <in-binding>
+            <bind name="ad_host" type="AD:AdHost" export-name="ad_host"/>
+            <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+        </in-binding>
+        <out-binding/>
+        <description>Simple task with custom script capability.</description>
+        <position y="60.0" x="140.0"/>
+    </workflow-item>
+</ns2:workflow>
