@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getVM" result-type="string" api-version="6.0.0" id="94738fd1-22d2-41fb-b102-e42eeea84fbe" version="0.0.0" category-name="com.vmware.unboxing" memory-limit="256000000">
+  <runtime><![CDATA[powercli:12-powershell-7.0]]></runtime>
+  <param n="username" t="string"><![CDATA[]]></param>
+  <param n="password" t="SecureString"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[function Handler($context, $inputs) {
+    
+    set-PowerCLIConfiguration -InvalidCertificateAction:Ignore -Confirm:$false
+    
+    $server="10.109.44.27"
+     Connect-VIServer -Server $server -Protocol https -User $inputs.username -Password $inputs.password
+
+    $vms = (Get-VM).where{$_.PowerState -eq 'PoweredOn'}
+
+    Write-Host $vms
+
+    return ""
+}]]></script>
+</dunes-script-module>
